@@ -1,5 +1,7 @@
+"use client"
 import React, { useState, useEffect, useRef } from 'react';
 import AITypingEffect from '@/components/animations/ai-typing-effect';
+import { CompassIcon, PenIcon, UserCircle } from 'lucide-react';
 
 const AttachmentIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-500 group-hover:text-sky-blue transition-colors duration-200 ease-in-out">
@@ -51,7 +53,7 @@ const SearchBar = () => {
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [showAiSuggestions, setShowAiSuggestions] = useState(false);
   const [animateSuggestions, setAnimateSuggestions] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   
   // Simulate AI suggestion loading
   useEffect(() => {
@@ -117,7 +119,7 @@ const SearchBar = () => {
     }
   };
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSearchValue(e.target.value);
   };
   
@@ -168,14 +170,29 @@ const SearchBar = () => {
       
       <div className="max-w-4xl mx-auto mb-8 relative">
         <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-[#FF8E53] via-[#FF6B6B] to-[#FF5E99] rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
-          
-          <div className="relative flex items-center h-14 px-4 rounded-xl bg-gradient-to-r from-[#FF8E53] via-[#FF6B6B] to-[#FF5E99] shadow-lg">
+          <div className="absolute -inset-1 bg-gradient-to-r from-[#FF8E53] via-[#FF6B6B] to-[#FF5E99] rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300 animate-pulse">
+          </div>
+          <div className="relative items-center  px-1 py-1 rounded-xl bg-gradient-to-r from-[#FF8E53] via-[#FF6B6B] to-[#FF5E99] shadow-lg">
+            <div style={{display:'block'}}>
+<button className=' pl-2 pr-4 text-lg border-white border-[2px] text-white m-5 rounded-[20px]'>
+  <PenIcon className='inline m-2'/>
+  Write a prompt
+</button>
+<button className=' pl-2 pr-4 text-lg border-white border-[2px] text-white m-5 rounded-[20px]'>
+  <CompassIcon  className='inline m-2'/>
+  Find a product
+</button>
+<button className=' pl-2 pr-4 text-lg border-white border-[2px] text-white m-5 rounded-[20px]'>
+  <UserCircle className='inline m-2' />
+  Help us know you better
+</button>
+            </div>
+            <div className='flex'>
             <div className="flex-shrink-0 w-5 h-5 mr-2">
               {isTyping ? <AIAssistantIcon /> : (
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 text-white/90" 
+                  className="h-8 w-15 text-white/90" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -183,21 +200,27 @@ const SearchBar = () => {
                   <path 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
-                    strokeWidth={2} 
+                    strokeWidth={3} 
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
                   />
                 </svg>
               )}
             </div>
             
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder="Type a command or search"
-              className="flex-grow h-full bg-transparent border-none text-white placeholder-white/70 font-bold focus:outline-none focus:ring-0 px-3 py-2 text-base"
-              value={searchValue}
-              onChange={handleInputChange}
-            />
+            <textarea
+  ref={inputRef}
+  rows={6}
+  placeholder={`Describe your task or challenge…
+We'll help you solve it instantly using AI.
+
+💡 Example: "Generate SEO-optimized blog titles for my startup"
+
+              `}
+  className="flex-grow bg-transparent border-none text-6xl placeholder:text-3xl text-white placeholder-white/70 font-bold resize-none focus:outline-none focus:ring-0 px-20"
+  value={searchValue}
+  onChange={handleInputChange}
+/>
+
             
             {searchValue && (
               <button 
@@ -209,6 +232,7 @@ const SearchBar = () => {
                 </svg>
               </button>
             )}
+          </div>
           </div>
         </div>
         
