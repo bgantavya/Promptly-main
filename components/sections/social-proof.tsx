@@ -1,15 +1,22 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const SocialProof = () => {
   const [mounted, setMounted] = useState(false);
-  const [category, setCategory] = useState<"b2b" | "b2c">("b2b");
+  const categories = ["b2b", "b2c"] as const;
+  const [category, setCategory] = useState<(typeof categories)[number]>("b2b");
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Automatically switch category every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCategory((prev) => (prev === "b2b" ? "b2c" : "b2b"));
+    }, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   const logos = {
@@ -31,8 +38,6 @@ const SocialProof = () => {
     ]
   };
 
-  const categories = ["b2b", "b2c"] as const;
-
   if (!mounted) {
     return (
       <div className="mt-14 md:mt-16 h-32 flex items-center justify-center">
@@ -43,26 +48,34 @@ const SocialProof = () => {
 
   return (
     <>
-
-      {/* Inline clickable categories */}
-<p className="text-center m-8 text-lg md:text-xl text-gray-700 font-medium">
-  We work with{" "}
-  {categories.map((cat, index) => (
-    <span
-      key={cat}
-      onClick={() => setCategory(cat)}
-      className={`cursor-pointer font-semibold transition-colors duration-200 ${
-        category === cat
-          ? "text-pink-600 underline"
-          : "text-gray-500 hover:text-pink-500"
-      }`}
-    >
-      {cat.toUpperCase()}
-      {index < categories.length - 1 ? ", " : ""}
-    </span>
-  ))}{" "}
-  clients.y
-</p>
+      {/* Category Display with Animated Underline */}
+      <p className="text-center m-8 text-gray-500 relative">
+        Over 20,000 creative teams use Promptly AI to simplify workflow. We work with{" "}
+        {categories.map((cat, index) => (
+          <span
+            key={cat}
+            className="relative inline-block mx-1"
+          >
+            <span className={`transition-colors duration-200 ${category === cat ? "text-black" : "hover:text-black cursor-pointer"}`}>
+              {cat}
+            </span>
+            {category === cat && (
+              <motion.div
+                key={cat}
+                layoutId="underline"
+                className="absolute bottom-0 left-0 h-[2px] bg-black w-full"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                exit={{ scaleX: 0 }}
+                transition={{ duration: 5, ease: "linear" }}
+                style={{ transformOrigin: "left" }}
+              />
+            )}
+            {index < categories.length - 1 ? "," : ""}{" "}
+          </span>
+        ))}
+        clients.
+      </p>
 
       {/* Logos */}
       <div className="w-full max-w-3xl animate-in">
@@ -72,12 +85,12 @@ const SocialProof = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 5 }}
             className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 md:gap-x-10"
           >
             {logos[category].map((logo) => (
               <div
-                key={logo.name}
+                key={logo.name + Math.random()} // make keys unique
                 className="grayscale hover:grayscale-0 transition-all duration-300 w-24 h-12 flex items-center justify-center"
               >
                 <div className="relative w-24 h-10 flex items-center justify-center">
@@ -100,9 +113,6 @@ const SocialProof = () => {
           </motion.div>
         </AnimatePresence>
       </div>
-                    <p className="mt-5 md:mt-10 text-center text-gray-500 animate-in">
-                            Over 20,000 creative teams use Promptly AI to simplify workflow.
-                          </p>
     </>
   );
 };
